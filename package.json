@@ -1,5 +1,5 @@
 {
-  "name": "rancher-deregisterer",
+  "name": "rancher-asg-host-unregisterer",
   "version": "0.1.0",
   "description": "AWS SQS processor to remove Rancher hosts on autosclaing events",
   "main": "index.js",

@@ -36,7 +36,7 @@ const handleMessage = (message, done) => {
   } else if (messageBody.LifecycleTransition && 
         messageBody.LifecycleTransition === 'autoscaling:EC2_INSTANCE_TERMINATING') {
     // Instance terminating
-    console.log('   Received instance terminating notification.');
+    console.log('   Received instance terminating notification: ' + messageBody.EC2InstanceId);
 
     // Setup standard error response
     const errorResponse = (err) => {

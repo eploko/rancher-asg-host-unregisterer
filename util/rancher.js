@@ -21,35 +21,13 @@ class Rancher {
 	}
 	
 	/**
-	 * Returns a list of project ids.
+	 * Returns a list of hosts.
 	 */
-	getProjectIds() {
+	getHosts() {
 		return new Promise((resolve, reject) => {
 			request({
 				method: 'GET',
-				url: this.config.rancherUrl + '/projects'
-			}, (err, response) => {
-
-				//Reject on error
-				if(err) return reject(err);
-
-				//Parse the response body and return the project ids
-				resolve(
-					_.pluck(JSON.parse(response.body).data, 'id')
-				);
-
-			});
-		});
-	}
-
-	/**
-	 * Returns a list of hosts for the specified project.
-	 */
-	getProjectHosts(projectId) {
-		return new Promise((resolve, reject) => {
-			request({
-				method: 'GET',
-				url: this.config.rancherUrl + '/projects/' + projectId + '/hosts'
+				url: this.config.rancherUrl + '/hosts'
 			}, (err, response) => {
 
 				//Reject on error
@@ -67,39 +45,21 @@ class Rancher {
 	 */
 	getHostByIdLabel(labelName, labelValue) {
 		return new Promise((resolve, reject) => {
-			this.getProjectIds()
-			.then((projectIds) => {
+			//Load the hosts from each project
+			this.getHosts()
+			.then((projectHosts) => {
 
-				//No project ids? Error.
-				if(projectIds.length == 0) {
-					return reject('No projects registered on the server.');
-				}
+				let discoveredHostIds = [];
 
-				//Load the hosts from each project
-				let projectHosts = projectIds.map( this.getProjectHosts.bind(this) );
-
-				//Wait for all hosts to load
-				Promise.all(projectHosts)
-				.then((values) => {
-
-					let discoveredHostIds = [];
-
-					//Check the hosts in each project for the requested label value
-					values.forEach((projectHosts) => {
-						projectHosts.forEach((host) => {
-							if(host.labels && host.labels[labelName] && host.labels[labelName] == labelValue) {
-								discoveredHostIds.push( host.id );
-							}
-						});
-					});
-
-					//Resolve with the host ids
-					resolve(discoveredHostIds);
-
-				})
-				.catch((err) => {
-					reject(err);
+				//Check the hosts in each project for the requested label value
+				projectHosts.forEach((host) => {
+					if(host.labels && host.labels[labelName] && host.labels[labelName] == labelValue) {
+						discoveredHostIds.push( host.id );
+					}
 				});
+
+				//Resolve with the host ids
+				resolve(discoveredHostIds);
 
 			})
 			.catch((err) => {
