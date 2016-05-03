@@ -1,0 +1,19 @@
+rancher-server:
+  image: rancher/server:v0.42.0
+  ports:
+   - 8080:8080
+
+app:
+  build: .
+  command: npm run start-dev
+  environment:
+   - SQS_URL=
+   - AWS_ACCESS_KEY_ID=
+   - AWS_SECRET_ACCESS_KEY=
+   - AWS_DEFAULT_REGION=eu-west-1
+   - RANCHER_SERVER_ACCESS_KEY=
+   - RANCHER_SERVER_SECRET_KEY=
+  links:
+   - rancher-server:rancher-server
+  volumes:
+   - ./:/src/app
