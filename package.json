@@ -1,0 +1,23 @@
+{
+  "name": "rancher-asg-host-unregisterer",
+  "version": "0.1.0",
+  "description": "AWS SQS processor to remove Rancher hosts on autosclaing events",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start-dev": "cd .. && $(npm bin)/nodemon -L app/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrey Subbotin <andrey@subbotin.me>",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.2.6",
+    "babel": "^5.8.23",
+    "lodash": "^3.10.1",
+    "request": "^2.64.0",
+    "sqs-consumer": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.7.3"
+  }
+}
